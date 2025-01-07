@@ -91,6 +91,4 @@ try:
 
         time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
         hours, minutes, seconds = up_date_time(hours, minutes, seconds) 
-
-except KeyboardInterrupt:
     print("\nClock interrupted!")
