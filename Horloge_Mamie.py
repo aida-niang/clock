@@ -1,24 +1,45 @@
 import time
 from datetime import datetime
 
-def display_time():
+def display_time(mode=True):
+    """Affiche l'heure selon le mode 12h ou 24h."""
     try:
         while True:
-            # Obtenir l'heure actuelle
-            actual_time = datetime.now()
-            
-            # Formater l'heure sous la forme hh:mm:ss
-            formatted_time = actual_time.strftime("%H:%M:%S")
-            
-            # Afficher l'heure dans la même ligne (utile pour la mise à jour)
+            current_time = datetime.now()
+
+            # Formater l'heure selon le mode sélectionné
+            if mode:
+                formatted_time = current_time.strftime("%H:%M:%S")  # Format 24 heures
+            else:
+                formatted_time = current_time.strftime("%I:%M:%S %p")  # Format 12 heures avec AM/PM
+
+            # Afficher l'heure dans la même ligne
             print(f"\r{formatted_time}", end="")
-            
-            # Attendre une seconde avant de mettre à jour
+
+            # Attendre une seconde avant de mettre à jour l'heure
             time.sleep(1)
 
-            # Message quand l'utilisateur appuie sur ctrl + c
     except KeyboardInterrupt:
         print("\nProgramme arrêté.")
 
-# Appeler la fonction pour afficher l'heure
-display_time()
+def select_mode():
+    """Permet à l'utilisateur de choisir le mode d'affichage de l'heure."""
+    while True:
+        choice = input("Choisissez le mode d'affichage (12h ou 24h) : ").strip().lower()  # Convertir la saisie en minuscules
+        if choice == "12h":
+            return False  # Mode 12 heures
+        elif choice == "24h":
+            return True  # Mode 24 heures
+        else:
+            print("❌ Choix invalide. Veuillez entrer '12h' ou '24h'.")
+
+def main():
+    # 1. Demander le mode d'affichage
+    print("Bienvenue dans le programme d'affichage de l'heure.\n")
+    mode = select_mode()  # Demander à l'utilisateur de choisir le mode d'affichage
+
+    # 2. Lancer l'affichage de l'heure en fonction du mode sélectionné
+    display_time(mode)
+
+# Appeler la fonction principale
+main()
