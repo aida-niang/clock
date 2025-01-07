@@ -61,10 +61,8 @@ except ValueError as e:
 print("To exit, press Ctrl + C")
 try:
     while True:
-        # Mettre à jour et afficher l'heure
         formatted_time = format_time(hours, minutes, seconds, format_choice)
         print_time(formatted_time)
-        time.sleep(1)  # Pause d'une seconde
-        hours, minutes, seconds = up_date_time(hours, minutes, seconds)  # Incrémente l'heure
-except KeyboardInterrupt:
+        time.sleep(1) 
+        hours, minutes, seconds = up_date_time(hours, minutes, seconds) 
     print("\nClock interrupted!")
