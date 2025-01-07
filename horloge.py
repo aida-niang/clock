@@ -16,7 +16,7 @@ def up_date_time(hours, minutes, seconds): #up date the time
     return hours, minutes, seconds 
 
 
-def format_time(hours, minutes, seconds, format_choice): #choose the format 
+def format_time(hours, minutes, seconds, format_choice): #choose the format 12 or 24
     struct_time = time.struct_time((2025, 1, 6, hours, minutes, seconds, 0, 0, -1))
     if format_choice == '12h':
         return time.strftime("%I:%M:%S %p", struct_time) #for the 12h format, we have to add the %p options to destinguish between morning and afternoon
@@ -57,12 +57,12 @@ except ValueError as e:
 
 
 ####################################################################################################################
-#Step 5 : Call the different functions
+#Step 5 : Call the different functions + The exit option 
 print("To exit, press Ctrl + C")
 try:
     while True:
         formatted_time = format_time(hours, minutes, seconds, format_choice)
         print_time(formatted_time)
-        time.sleep(1) 
+        time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
         hours, minutes, seconds = up_date_time(hours, minutes, seconds) 
     print("\nClock interrupted!")
