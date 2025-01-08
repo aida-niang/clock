@@ -2,131 +2,127 @@ import time
 from datetime import datetime, timedelta
 from threading import Event, Thread
 
-# Variable globale pour l'heure définie
-set_time = None
-alarm_time = None
-pause_event = Event()  # Événement pour contrôler la pause
-pause_event.set()  # L'horloge commence active
+# === Global Variables Section ===
+set_time = None  
+alarm_time = None  
+pause_event = Event()  # Event to control the pause
+pause_event.set()  # The clock starts active by default
 
+# === Display Time Function Section ===
 def display_time(mode=True):
-    """Affiche l'heure actuelle ou l'heure définie manuellement dans le mode sélectionné."""
-    global set_time, alarm_time  # Déclare que ces variables sont globales
+    global set_time, alarm_time  
     try:
         while True:
-            # Utiliser l'heure définie manuellement si disponible, sinon utiliser l'heure actuelle
             if set_time:
                 current_time = set_time
-                set_time += timedelta(seconds=1)  # Incrémenter l'heure définie d'une seconde
+                set_time += timedelta(seconds=1)  
             else:
                 current_time = datetime.now()
 
-            # Formater l'heure selon le mode sélectionné
+            # Format the time based on the selected mode (24-hour or 12-hour)
             if mode:
-                formatted_time = current_time.strftime("%H:%M:%S")  # Format 24 heures
+                formatted_time = current_time.strftime("%H:%M:%S")  # 24-hour format
             else:
-                formatted_time = current_time.strftime("%I:%M:%S %p")  # Format 12 heures avec AM/PM
+                formatted_time = current_time.strftime("%I:%M:%S %p")  # 12-hour format with AM/PM
 
-            # Afficher l'heure dans la même ligne
             print(f"\r{formatted_time}", end="")
 
-            # Vérifier si l'heure actuelle correspond à l'heure de l'alarme
+            # Check if the current time matches the alarm time
             if alarm_time and current_time.strftime("%H:%M:%S") == alarm_time.strftime("%H:%M:%S"):
-                print(f"\n🔔 Alarme ! C'est l'heure : {formatted_time}")
-                alarm_time = None  # Réinitialiser l'alarme après son déclenchement
+                print(f"\n🔔 Alarm! It's time: {formatted_time}")
+                alarm_time = None  # Reset the alarm after it goes off
 
-            # Attendre une seconde avant de mettre à jour l'heure
             time.sleep(1)
 
-            # Vérifier si l'horloge est en pause, dans ce cas, on arrête l'affichage
+            # Check if the clock is paused, in that case, stop the display
             pause_event.wait()
     except KeyboardInterrupt:
-        print("\nProgramme arrêté.")  # Afficher ce message quand Ctrl+C est pressé
+        print("\nProgram stopped.")  # Display this message when Ctrl+C is pressed
 
+# === Mode Selection Function Section ===
 def select_mode():
-    """Permet à l'utilisateur de choisir le mode d'affichage de l'heure."""
     while True:
-        choice = input("Choisissez le mode d'affichage (12h ou 24h) : ").strip().lower()  # Convertir la saisie en minuscules
+        choice = input("Choose the time display mode (12h or 24h): ").strip().lower()
         if choice == "12h":
-            return False  # Mode 12 heures
+            return False  
         elif choice == "24h":
-            return True  # Mode 24 heures
+            return True  
         else:
-            print("❌ Choix invalide. Veuillez entrer '12h' ou '24h'.")
+            print("❌ Invalid choice. Please enter '12h' or '24h'.")
 
+# === Time Setting Function Section ===
 def set_time_function(hours, minutes, seconds):
-    """Permet de définir une heure personnalisée."""
-    global set_time  # Déclare que cette variable est globale
+    global set_time  
     current_time = datetime.now()
-    # Mettre à jour l'heure avec les valeurs spécifiées
+    # Set the time using the given hours, minutes, and seconds
     set_time = current_time.replace(hour=hours, minute=minutes, second=seconds)
-    print(f"\nHeure définie à {set_time.strftime('%H:%M:%S')}.\n")  # Ajouter un retour à la ligne
+    print(f"\nTime set to {set_time.strftime('%H:%M:%S')}.\n")  # Display the new time
 
+# === Alarm Setting Function Section ===
 def set_alarm(hours, minutes, seconds):
-    """Permet de définir une alarme."""
-    global alarm_time  # Déclare que cette variable est globale
+    global alarm_time  
     current_time = datetime.now()
-    # Définir l'heure de l'alarme
+    # Set the alarm time
     alarm_time = current_time.replace(hour=hours, minute=minutes, second=seconds)
-    print(f"Alarme réglée à {alarm_time.strftime('%H:%M:%S')}.\n")  # Ajouter un retour à la ligne
+    print(f"Alarm set for {alarm_time.strftime('%H:%M:%S')}.\n")  # Display the alarm time
 
+# === Pause and Resume Functions Section ===
 def pause_clock():
-    """Met en pause l'horloge."""
-    pause_event.clear()  # Arrête l'horloge en suspendant l'événement
-    print("\n⏸️ Horloge mise en pause.\n")
+    pause_event.clear()  # Stops the clock by clearing the event
+    print("\n⏸️ Clock paused.\n")
 
 def resume_clock():
-    """Relance l'horloge."""
-    pause_event.set()  # Relance l'horloge en activant l'événement
-    print("\n▶️ Horloge relancée.\n")
+    pause_event.set()  # Resumes the clock by setting the event
+    print("\n▶️ Clock resumed.\n")
 
+# === Main Loop Section ===
 def main():
-    """Fonction principale qui gère le programme."""
     while True:
-        # 1. Demander le mode d'affichage
-        print("Bienvenue dans le programme d'affichage de l'heure.\n")
-        mode = select_mode()  # Demander à l'utilisateur de choisir le mode d'affichage
+        # 1. Ask the user to choose the time display mode (12h or 24h)
+        print("Welcome to the time display program.\n")
+        mode = select_mode()  # Get the user's choice for time mode
 
-        # Lancer l'affichage de l'heure dans un thread séparé
+        # Start displaying the time in a separate thread
         time_thread = Thread(target=display_time, args=(mode,))
-        time_thread.daemon = True  # Le thread se termine lorsque le programme principal se termine
+        time_thread.daemon = True  # The thread will end when the main program ends
         time_thread.start()
 
-        # 2. Demander si l'utilisateur veut régler l'heure
-        adjustment = input("\nVoulez-vous définir l'heure ? (oui/non) : ").strip().lower()
-        if adjustment == "oui":
-            heures = int(input("Entrez les heures (0-23) : "))
-            minutes = int(input("Entrez les minutes (0-59) : "))
-            secondes = int(input("Entrez les secondes (0-59) : "))
-            set_time_function(heures, minutes, secondes)
+        # 2. Ask if the user wants to set the time
+        set_time_input = input("\nDo you want to set the time? (yes/no): ").strip().lower()
+        if set_time_input == "yes":
+            hours = int(input("Enter hours (0-23): "))
+            minutes = int(input("Enter minutes (0-59): "))
+            seconds = int(input("Enter seconds (0-59): "))
+            set_time_function(hours, minutes, seconds)
         else:
-            print(f"Heure actuelle : {datetime.now().strftime('%H:%M:%S')}\n")
+            print(f"Current time: {datetime.now().strftime('%H:%M:%S')}\n")
 
-        # 3. Demander si l'utilisateur veut régler une alarme
-        alarm_set = input("\nVoulez-vous régler une alarme ? (oui/non) : ").strip().lower()
-        if alarm_set == "oui":
-            heures_alarme = int(input("Entrez l'heure de l'alarme (0-23) : "))
-            minutes_alarme = int(input("Entrez les minutes de l'alarme (0-59) : "))
-            secondes_alarme = int(input("Entrez les secondes de l'alarme (0-59) : "))
-            set_alarm(heures_alarme, minutes_alarme, secondes_alarme)
+        # 3. Ask if the user wants to set an alarm
+        alarm_set_input = input("\nDo you want to set an alarm? (yes/no): ").strip().lower()
+        if alarm_set_input == "yes":
+            alarm_hours = int(input("Enter alarm hour (0-23): "))
+            alarm_minutes = int(input("Enter alarm minutes (0-59): "))
+            alarm_seconds = int(input("Enter alarm seconds (0-59): "))
+            set_alarm(alarm_hours, alarm_minutes, alarm_seconds)
 
-        # 4. Demander si l'utilisateur veut mettre l'horloge en pause et éventuellement la relancer
-        pause_action = input("\nVoulez-vous mettre l'horloge en pause ? (oui/non) : ").strip().lower()
-        if pause_action == "oui":
+        # 4. Ask if the user wants to pause the clock and possibly resume it
+        pause_input = input("\nDo you want to pause the clock? (yes/no): ").strip().lower()
+        if pause_input == "yes":
             pause_clock()
 
-            # Demander si l'utilisateur veut relancer l'horloge
-            resume_action = input("Voulez-vous relancer l'horloge ? (oui/non) : ").strip().lower()
-            if resume_action == "oui":
+            # Ask if the user wants to resume the clock
+            resume_input = input("Do you want to resume the clock? (yes/no): ").strip().lower()
+            if resume_input == "yes":
                 resume_clock()
 
-        # 5. Quitter le programme
-        quit_action = input("\nVoulez-vous quitter ? (oui/non) : ").strip().lower()
-        if quit_action == "oui":
-            print("👋 Au revoir !")
-            break  # Quitter la boucle et arrêter le programme
+        # 5. Ask if the user wants to quit
+        quit_input = input("\nDo you want to quit? (yes/no): ").strip().lower()
+        if quit_input == "yes":
+            print("👋 Goodbye!")
+            break  # Exit the loop and stop the program
 
-# Appeler la fonction principale dans un bloc try-except global
+# === Execution Section ===
 try:
     main()
 except KeyboardInterrupt:
-    print("\nProgramme arrêté.")  # Afficher ce message quand Ctrl+C est pressé
+    print("\nProgram stopped.")  
