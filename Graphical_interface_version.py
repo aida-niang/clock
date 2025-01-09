@@ -7,7 +7,7 @@ import time
 # Create the window for the clock
 fig, ax = plt.subplots()
 ax.axis('off')
-text_Clock = ax.text(0.5, 0.5, '', transform=ax.transAxes, ha='center', fontsize=50)
+text_Clock = ax.text(0.5, 0.5, '', transform=ax.transAxes, ha='center', fontsize=40, color = 'red')
 ####################################################################################################################
 
 # Create my clock
@@ -35,7 +35,7 @@ def format_time(hours, minutes, seconds, format_choice):
         raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
 
 def alarm_setting(current_h, current_m, current_s, alarm_h, alarm_m, alarm_s):  
-    return (current_h == alarm_h and current_m == alarm_m and current_s == alarm_s)
+    return (current_h == alarm_h and current_m == alarm_m and current_s >= alarm_s)
 
 def init():    #this function is the equivalent of print_time()
     text_Clock.set_text('') #It initialize the animation of the text
@@ -44,12 +44,14 @@ def init():    #this function is the equivalent of print_time()
 def update_text_clock(frame):  # Update the text during the animation
     global hours, minutes, seconds #global allow this function to modify these variables (they are not local) and this modification will be visible in the hole program
     formatted_time = format_time(hours, minutes, seconds, format_choice) #call the function to convert tuple into string
-    text_Clock.set_text(formatted_time) #update the string shown in the figure
+
     
+    MESSAGE = ''
     if alarm_setting(hours, minutes, seconds, alarm_hour, alarm_minute, alarm_second):
         ALARM = format_time(alarm_hour, alarm_minute, alarm_second, format_choice)
-        print(f"\nIt's {ALARM}. It's wake-up time!") #verify the alarm and print this message
+        MESSAGE = f"It's {ALARM}. It's wake-up time!" #verify the alarm and print this message
     
+    text_Clock.set_text(formatted_time + "\n" + MESSAGE) #update the string shown in the figure
     hours, minutes, seconds = up_date_time(hours, minutes, seconds) #call the function to update the values of hours, minutes and seconds
     
     return text_Clock, #the returned value will be used by FuncAnimation 
