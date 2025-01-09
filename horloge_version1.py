@@ -25,6 +25,9 @@ def format_time(hours, minutes, seconds, format_choice): #choose the format 12 o
     else:
         raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
 
+def alarm_setting(current_h, current_m, current_s, alarm_h, alarm_m, alarm_s):  # Check if the alarm time matches
+    return (current_h == alarm_h and current_m == alarm_m and current_s == alarm_s)
+
 
 def print_time(formatted_time): #Print the formated time
     print(f"The current time is: {formatted_time}", end="\r")
@@ -55,6 +58,21 @@ except ValueError as e:
     print(f"Error: {e}")
     exit()
 
+##########################################################################################################################
+# Step 5 : Set the alarm
+try:
+    print(f"Please, set the alarm")
+
+    alarm_hour = int(input("Choose the alarm hour (0 - 23): "))
+    alarm_minute = int(input("Choose the alarm minute (0 - 59): "))
+    alarm_second = int(input("Choose the alarm second (0 - 59): "))
+
+    if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
+        raise ValueError("Time values out of range")
+
+except ValueError:
+    print(f"Error")
+    exit()
 
 ####################################################################################################################
 #Step 5 : Call the different functions + The exit option 
@@ -63,6 +81,13 @@ try:
     while True:
         formatted_time = format_time(hours, minutes, seconds, format_choice)
         print_time(formatted_time)
+
+        if alarm_setting(hours, minutes, seconds, alarm_hour, alarm_minute, alarm_second):
+            ALARM = format_time(alarm_hour, alarm_minute, alarm_second, format_choice)
+            print(f"\nIt's {ALARM}. It's wake-up time!")
+
         time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
         hours, minutes, seconds = up_date_time(hours, minutes, seconds) 
+
+except KeyboardInterrupt :
     print("\nClock interrupted!")
