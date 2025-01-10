@@ -15,9 +15,9 @@ def display_time():
                 hours = current_time[0] % 12
                 hours = 12 if hours == 0 else hours
                 am_pm = "AM" if current_time[0] < 12 else "PM"
-                print("{:02d}:{:02d}:{:02d} {}".format(hours, current_time[1], current_time[2], am_pm))
+                print("\r{:02d}:{:02d}:{:02d} {}".format(hours, current_time[1], current_time[2], am_pm), end="")
             else:
-                print("{:02d}:{:02d}:{:02d}".format(current_time[0], current_time[1], current_time[2]))
+                print("\r{:02d}:{:02d}:{:02d}".format(current_time[0], current_time[1], current_time[2]), end="")
             time.sleep(1)
             update_time()
 
@@ -59,14 +59,14 @@ def toggle_pause():
     global paused
     paused = not paused
     if paused:
-        print("Clock paused.")
+        print("\rClock paused.   ", end="")
     else:
-        print("Clock resumed.")
+        print("\rClock resumed.  ", end="")
 
 def check_alarm():
     global current_time, alarm_time
     if alarm_time and current_time == alarm_time:
-        print("Alarm! It's {:02d}:{:02d}:{:02d}".format(current_time[0], current_time[1], current_time[2]))
+        print("\rAlarm! It's {:02d}:{:02d}:{:02d}   ".format(current_time[0], current_time[1], current_time[2]), end="")
 
 def main():
     global stop_thread
@@ -79,7 +79,9 @@ def main():
 
     try:
         while True:
-            input("Press Enter to pause or resume the clock: ")
+            # Ajout d'un message d'invite sur une nouvelle ligne
+            print("\nPress Enter to pause or resume the clock:")
+            input()
             toggle_pause()
     except KeyboardInterrupt:
         stop_thread = True
