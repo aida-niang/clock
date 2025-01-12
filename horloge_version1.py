@@ -50,10 +50,12 @@ def break_clock():
 
 ####################################################################################################################
 #Step 3 : Enter the values
+print(f"Hello, Here is the Granny clock !")
+
 try:
-    hours = int(input("Enter current hour (0 - 23): "))
-    minutes = int(input("Enter current minute (0 - 59): "))
-    seconds = int(input("Enter current second (0 - 59): "))
+    hours = int(input("Please enter current hour (0 - 23): "))
+    minutes = int(input("Please enter current minute (0 - 59): "))
+    seconds = int(input("Please enter current second (0 - 59): "))
     
     if not (0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60):
         raise ValueError("Time values out of range")
