@@ -7,6 +7,9 @@ paused = False
 hours = 0
 minutes = 0
 seconds = 0
+alarm_hour = 0
+alarm_minute = 0
+alarm_second = 0
 
 ###################################################################################
 #Step 2 : define the functions 
@@ -36,9 +39,10 @@ def format_time(): #choose the format
         raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
 
 
-def alarm_setting(alarm_h, alarm_m, alarm_s): #Check if the alarm time matches the current time
+def alarm_setting(): #Check if the alarm time matches the current time
     global hours, minutes, seconds
-    return (hours == alarm_h and minutes == alarm_m and seconds == alarm_s)
+    global alarm_hour, alarm_minute, alarm_second
+    return (hours == alarm_hour and minutes == alarm_minute and seconds == alarm_second)
 
 def break_clock():
     global paused
@@ -78,19 +82,7 @@ except ValueError as e:
 
 ########################################################################################################################
 #Step 5 : Set the alarm
-try :
-    print (f"Please, set the alarm")
 
-    alarm_hour = int(input("Choose the alarm hour (0 - 23) : "))
-    alarm_minute = int(input("Choose the alarm minute (0 - 23) : "))
-    alarm_second = int(input("Choose the alarm second (0 - 23) : "))
-
-    if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
-            raise ValueError("Time values out of range")
-
-except ValueError :
-    print(f"Error")
-    exit()
 
 ####################################################################################################################
 #Step 6 : Call the different functions (the main loop)
@@ -100,18 +92,45 @@ try:
     while True:
         formatted_time = format_time()
         print(f"The current time is: {formatted_time}", end="\r")
+        
 
-        if alarm_setting(alarm_hour, alarm_minute, alarm_second):
-            print("\nIt's wake-up time!")
+        alarm_ = input("\nDo you want to set the alarm ? ((Yes/No))").strip().lower()
 
-        if not paused :
-            time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
-            up_date_time() 
+        if alarm_ == 'Yes' :
+
+            try :
+                print (f"Please, set the alarm")
+
+                alarm_hour = int(input("Choose the alarm hour (0 - 23) : "))
+                alarm_minute = int(input("Choose the alarm minute (0 - 23) : "))
+                alarm_second = int(input("Choose the alarm second (0 - 23) : "))
+
+                if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
+                        raise ValueError("Time values out of range")
+                    
+                if alarm_setting():
+                    print("\nIt's wake-up time!")
+
+                if not paused :
+                    time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
+                    up_date_time() 
+
+                if paused :
+                    input()
+                    break_clock()
+
+            except ValueError :
+                print(f"Error")
+                exit()
+
+        elif alarm_ == 'No' :
+            continue
+
+        else :
+            print("I didn't understand your request. Please answer by 'yes' or 'no'!")
 
 
-        if paused :
-            input()
-            break_clock()
+        
 
 except KeyboardInterrupt:
     print("\nClock interrupted!")
