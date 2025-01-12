@@ -1,9 +1,17 @@
 #Step 1 : Import the necessary librairies
 import time
 
+##################################################################################
+#Initialization of the variables
+paused = False
+hours = 0
+minutes = 0
+seconds = 0
+
 ###################################################################################
 #Step 2 : define the functions 
-def up_date_time(hours, minutes, seconds): #up date the time
+def up_date_time(): #up date the time
+    global hours, minutes, seconds 
     seconds += 1 
     if seconds == 60: 
         seconds = 0
@@ -16,23 +24,29 @@ def up_date_time(hours, minutes, seconds): #up date the time
     return hours, minutes, seconds
 
 
-def format_time(hours, minutes, seconds, format_choice): #choose the format 
-    struct_time = time.struct_time((2025, 1, 6, hours, minutes, seconds, 0, 0, -1))
+def format_time(): #choose the format 
+    global hours, minutes, seconds, format_choice, local_time
+    local_time = time.localtime()
+    set_time = time.struct_time((2025, 1, 6, hours, minutes, seconds, 0, 0, -1))
     if format_choice == '12h':
-        return time.strftime("%I:%M:%S %p", struct_time) #for the 12h format, we have to add the %p options to destinguish between morning and afternoon
+        return time.strftime("%I:%M:%S %p", set_time) #for the 12h format, we have to add the %p options to destinguish between morning and afternoon
     elif format_choice == '24h':
-        return time.strftime("%H:%M:%S", struct_time)  
+        return time.strftime("%H:%M:%S", set_time)  
     else:
         raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
 
 
-def print_time(formatted_time): #Print the formated time
-    print(f"The current time is: {formatted_time}", end="\r")
+def alarm_setting(alarm_h, alarm_m, alarm_s): #Check if the alarm time matches the current time
+    global hours, minutes, seconds
+    return (hours == alarm_h and minutes == alarm_m and seconds == alarm_s)
 
-
-def alarm_setting(current_h, current_m, current_s, alarm_h, alarm_m, alarm_s): #Check if the alarm time matches the current time
-    return (current_h == alarm_h and current_m == alarm_m and current_s == alarm_s)
-
+def break_clock():
+    global paused
+    paused = not paused
+    if paused:
+        print("Clock paused.")
+    else:
+        print("Clock resumed.")
 
 ####################################################################################################################
 #Step 3 : Enter the values
@@ -82,14 +96,20 @@ print("To exit, press Ctrl + C")
 
 try:
     while True:
-        formatted_time = format_time(hours, minutes, seconds, format_choice)
-        print_time(formatted_time)
+        formatted_time = format_time()
+        print(f"The current time is: {formatted_time}", end="\r")
 
-        if alarm_setting(hours, minutes, seconds, alarm_hour, alarm_minute, alarm_second):
+        if alarm_setting(alarm_hour, alarm_minute, alarm_second):
             print("\nIt's wake-up time!")
-            break
 
-        time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
-        hours, minutes, seconds = up_date_time(hours, minutes, seconds) 
+        if not paused :
+            time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
+            up_date_time() 
+
+
+        if paused :
+            input()
+            break_clock()
+
 except KeyboardInterrupt:
     print("\nClock interrupted!")
