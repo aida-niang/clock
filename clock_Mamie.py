@@ -3,14 +3,16 @@ import time
 import os
 
 
-# Initialization of the variables
+##################################################################################
+# Step 2 : Initialization of the variables
+pause = False
 hours = 0
 minutes = 0
 seconds = 0
 paused = False
 
 ###################################################################################
-# Step 2 : Define the functions
+# Step 3 : Define the functions 
 def up_date_time():  # Update the time
     global hours, minutes, seconds
     seconds += 1
@@ -42,35 +44,39 @@ def alarm_setting():  # Check if the alarm time matches the current time
 
 
 ####################################################################################################################
-# Step 3 : Enter the values
+# Step 5 : Create the main loop
+
 try:
-    current_time = input("Enter the current Time in HH:MM:SS format: ")
-    hours, minutes, seconds = map(int, current_time.split(':'))
+    while True:
+        if keyboard.is_pressed('c'):
+            try:   
+                hours = int(input("Please enter current hour (0 - 23): "))
+                minutes = int(input("Please enter current minute (0 - 59): "))
+                seconds = int(input("Please enter current second (0 - 59): "))
+                
+                if not (0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60):
+                    raise ValueError("Time values out of range")
+            
+            except ValueError as e:
+                print(f"Error: {e}")
+                continue
 
-    if not (0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60):
-        raise ValueError("Time values out of range")
+            while True:
+                try:
+                    format_choice = input("Please, choose the adequate format (12h / 24h): ").strip().lower()
+                    if format_choice not in ['12h', '24h']:
+                        raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
+                    break
+                except ValueError as e:
+                    print(f"Error: {e}")
 
-except ValueError:
-    print("Error: Invalid time format or values out of range.")
-    exit()
+        elif keyboard.is_pressed('a'):
+            try:
+                print(f"Please, set the alarm")
 
-#####################################################################################################################
-# Step 4 : Choose the adequate format
-try:
-    format_choice = input("Choose the adequate format (12h / 24h): ").strip().lower()
-    if format_choice not in ['12h', '24h']:
-        raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
-
-except ValueError as e:
-    print(f"Error: {e}")
-    exit()
-
-########################################################################################################################
-# Step 5 : Set the alarm
-try:
-    print("Please, set the alarm.")
-    alarm_time = input("Choose the alarm time in HH:MM:SS format: ")
-    alarm_hour, alarm_minute, alarm_second = map(int, alarm_time.split(':'))
+                alarm_hour = int(input("Choose the alarm hour (0 - 23): "))
+                alarm_minute = int(input("Choose the alarm minute (0 - 59): "))
+                alarm_second = int(input("Choose the alarm second (0 - 59): "))
 
     if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
         raise ValueError("Alarm time values out of range")
