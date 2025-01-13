@@ -116,7 +116,8 @@ try:
 
                 # Make sound in windows
                 if alarm_setting():
-                    print(f"\nIt's {formatted_time}. It's wake-up time!")
+                    ALARM = format_time()
+                    print(f"\nIt's {ALARM}. It's wake-up time!")
                     for _ in range(3):
                         sound_file = 'C:\\chemin\\vers\\votre\\son.wav'
                         winsound.PlaySound(sound_file, winsound.SND_FILENAME)
