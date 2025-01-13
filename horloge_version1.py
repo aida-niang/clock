@@ -99,9 +99,6 @@ try :
     elif alarm_ == 'No' :
         print('')
 
-    else :
-        print("I didn't understand your request. Please answer by 'yes' or 'no'!")
-
 except ValueError :
         print(f"Error")
         exit()
