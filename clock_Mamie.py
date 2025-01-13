@@ -114,7 +114,6 @@ try:
             break
 
         if not pause:
-            # Only format time when the format_choice is valid
             if format_choice != '':
                 formatted_time = format_time()
                 print(f"The current time is: {formatted_time}", end="\r")
