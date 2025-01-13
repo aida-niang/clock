@@ -1,7 +1,7 @@
 # Step 1 : Import the necessary libraries
 import time
-import os
-
+import keyboard
+import winsound
 
 ##################################################################################
 # Step 2 : Initialization of the variables
@@ -9,14 +9,18 @@ pause = False
 hours = 0
 minutes = 0
 seconds = 0
-paused = False
+alarm_hour = 0
+alarm_minute = 0
+alarm_second = 0
+format_choice = ''  
+
 
 ###################################################################################
 # Step 3 : Define the functions 
 def up_date_time():  # Update the time
-    global hours, minutes, seconds
-    seconds += 1
-    if seconds == 60:
+    global hours, minutes, seconds 
+    seconds += 1 
+    if seconds == 60: 
         seconds = 0
         minutes += 1
     if minutes == 60:
@@ -27,21 +31,32 @@ def up_date_time():  # Update the time
     return hours, minutes, seconds
 
 
-def format_time():  # Choose the format
+def format_time():  # Choose the format 
     global hours, minutes, seconds, format_choice
+    if format_choice == '':
+        raise ValueError("You need to set the time format first (12h or 24h).")
+    
     set_time = time.struct_time((2025, 1, 6, hours, minutes, seconds, 0, 0, -1))
     if format_choice == '12h':
-        return time.strftime("%I:%M:%S %p", set_time)  # 12-hour format
+        return time.strftime("%I:%M:%S %p", set_time)  # For the 12h format, we need the %p option to distinguish between morning and afternoon
     elif format_choice == '24h':
-        return time.strftime("%H:%M:%S", set_time)  # 24-hour format
+        return time.strftime("%H:%M:%S", set_time)
     else:
         raise ValueError("Invalid format choice! Please choose '12h' or '24h'.")
 
 
 def alarm_setting():  # Check if the alarm time matches the current time
-    global hours, minutes, seconds, alarm_hour, alarm_minute, alarm_second
-    return hours == alarm_hour and minutes == alarm_minute and seconds == alarm_second
+    global hours, minutes, seconds
+    global alarm_hour, alarm_minute, alarm_second
+    return (hours == alarm_hour and minutes == alarm_minute and seconds == alarm_second)
 
+####################################################################################################################
+# Step 4 : Make the menu
+print(f"Hello, Here is the Granny's clock !")
+print(f"1 - Press 'c' to set the clock")
+print(f"2 - Press 'a' to set the alarm")
+print(f"3 - Press 'p' to pause or resume the clock")
+print(f"4 - Press 'q' to quit the clock (You can also press ctrl+C)")
 
 ####################################################################################################################
 # Step 5 : Create the main loop
@@ -78,31 +93,41 @@ try:
                 alarm_minute = int(input("Choose the alarm minute (0 - 59): "))
                 alarm_second = int(input("Choose the alarm second (0 - 59): "))
 
-    if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
-        raise ValueError("Alarm time values out of range")
+                if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
+                    raise ValueError("Time values out of range")
+                
+            except ValueError as e:
+                print(f"Error: {e}")
+                continue
 
-except ValueError:
-    print("Error: Invalid alarm time format or values out of range.")
-    exit()
+        elif keyboard.is_pressed('p'):
+            pause = not pause
+            if pause:
+                print("\nClock paused.")
+            else:
+                print("\nClock resumed.")
+            time.sleep(1)  
 
-####################################################################################################################
-# Step 6 : Call the different functions (the main loop)
-print("To exit, press Ctrl + C")
+        elif keyboard.is_pressed('q'):
+            print("\nExiting the clock......")
+            print("Goodbye !")
+            break
 
-try:
-    while True:
-        formatted_time = format_time()
-        print(f"The current time is: {formatted_time}", end="\r")
+        if not pause:
+            if format_choice != '':
+                formatted_time = format_time()
+                print(f"The current time is: {formatted_time}", end="\r")
 
-        if alarm_setting():
-            print("\n⏰ It's wake-up time!")
-             # Produire un bip sonore
-            for _ in range(3):  # Répéter 5 fois le bip
-                os.system('afplay /System/Library/Sounds/Glass.aiff')  # Chemin par défaut des sons sur macOS
-                time.sleep(0.2)  # Petite pause entre les bips
- 
-        time.sleep(1)  # This function introduces a 1-second delay between updates.
-        up_date_time()
+                if alarm_setting():
+                    print(f"\nIt's {formatted_time}. It's wake-up time!")
+                    for _ in range(3):
+                        sound_file = 'C:\\chemin\\vers\\votre\\son.wav'
+                        winsound.PlaySound(sound_file, winsound.SND_FILENAME)
+                        time.sleep(0.2)
+                        
+    
+            time.sleep(1)
+            up_date_time()
 
 except KeyboardInterrupt:
     print("\nClock interrupted!")
