@@ -5,7 +5,7 @@ import keyboard
 import winsound
 
 ##################################################################################
-# Initialization of the variables
+# Step 2 : Initialization of the variables
 pause = False
 hours = 0
 minutes = 0
@@ -17,7 +17,7 @@ format_choice = ''
 
 
 ###################################################################################
-# Step 2 : Define the functions 
+# Step 3 : Define the functions 
 def up_date_time():  # Update the time
     global hours, minutes, seconds 
     seconds += 1 
@@ -52,7 +52,7 @@ def alarm_setting():  # Check if the alarm time matches the current time
     return (hours == alarm_hour and minutes == alarm_minute and seconds == alarm_second)
 
 ####################################################################################################################
-# Step 3 : The menu
+# Step 4 : Make the menu
 print(f"Hello, Here is the Granny's clock !")
 print(f"1 - Press 'c' to set the clock")
 print(f"2 - Press 'a' to set the alarm")
@@ -60,7 +60,7 @@ print(f"3 - Press 'p' to pause or resume the clock")
 print(f"4 - Press 'q' to quit the clock (You can also press ctrl+C)")
 
 ####################################################################################################################
-# Step 6 : The main loop
+# Step 5 : Create the main loop
 
 try:
     while True:
