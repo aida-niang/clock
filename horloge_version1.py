@@ -1,9 +1,10 @@
 #Step 1 : Import the necessary librairies
 import time
+import keyboard
 
 ##################################################################################
 #Initialization of the variables
-paused = False
+pause = False
 hours = 0
 minutes = 0
 seconds = 0
@@ -28,8 +29,7 @@ def up_date_time(): #up date the time
 
 
 def format_time(): #choose the format 
-    global hours, minutes, seconds, format_choice, local_time
-    local_time = time.localtime()
+    global hours, minutes, seconds, format_choice
     set_time = time.struct_time((2025, 1, 6, hours, minutes, seconds, 0, 0, -1))
     if format_choice == '12h':
         return time.strftime("%I:%M:%S %p", set_time) #for the 12h format, we have to add the %p options to destinguish between morning and afternoon
@@ -44,17 +44,9 @@ def alarm_setting(): #Check if the alarm time matches the current time
     global alarm_hour, alarm_minute, alarm_second
     return (hours == alarm_hour and minutes == alarm_minute and seconds == alarm_second)
 
-def break_clock():
-    global paused
-    paused = not paused
-    if paused:
-        print("Clock paused.")
-    else:
-        print("Clock resumed.")
-
 ####################################################################################################################
 #Step 3 : Enter the values
-print(f"Hello, Here is the Granny clock !")
+print(f"Hello, Here is the Granny's clock !")
 
 try:
     hours = int(input("Please enter current hour (0 - 23): "))
@@ -68,7 +60,7 @@ except ValueError :
     print(f"Error")
     exit()
 
-print("To exit, press Ctrl + C")
+
 
 #####################################################################################################################
 #Step 4 : Choose the adequated format 
@@ -105,21 +97,33 @@ except ValueError :
 
 ####################################################################################################################
 #Step 6 : Call the different functions (the main loop)
+print("Press 'p' to pause or resume the clock")
+print("Press 'q' to quit the clock")
+print("To exit correctly, press Ctrl + C")
 try:
     while True:
-        formatted_time = format_time()
-        print(f"The current time is: {formatted_time}", end="\r")
+        if keyboard.is_pressed('p'):
+            pause = not pause
+            if pause:
+                print("\nClock paused.")
+            else:
+                print("\nClock resumed.")
+            time.sleep(1)  
 
-        if alarm_setting():
-            print("\nIt's wake-up time!")
-        
-        if not paused :
-            time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
-            up_date_time() 
+        if keyboard.is_pressed('q'):
+            print("\nExiting the clock......")
+            print("Goodbye !")
+            break
 
-        if paused :
-            input()
-            break_clock()      
+        if not pause:
+            formatted_time = format_time()
+            print(f"The current time is: {formatted_time}", end="\r")
+
+            if alarm_setting():
+                print(f"\nIt's {formatted_time}. It's wake-up time!")
+            
+            time.sleep(1)
+            up_date_time()
 
 except KeyboardInterrupt:
     print("\nClock interrupted!")
