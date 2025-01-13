@@ -2,6 +2,7 @@
 import time
 import keyboard
 import winsound
+import os
 
 ##################################################################################
 # Step 2 : Initialization of the variables
@@ -65,9 +66,8 @@ try:
     while True:
         if keyboard.is_pressed('c'):
             try:   
-                hours = int(input("Please enter current hour (0 - 23): "))
-                minutes = int(input("Please enter current minute (0 - 59): "))
-                seconds = int(input("Please enter current second (0 - 59): "))
+                alarm_time = input("Choose the alarm time in HH:MM:SS format: ")
+                alarm_hour, alarm_minute, alarm_second = map(int, alarm_time.split(':'))
                 
                 if not (0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60):
                     raise ValueError("Time values out of range")
@@ -89,9 +89,9 @@ try:
             try:
                 print(f"Please, set the alarm")
 
-                alarm_hour = int(input("Choose the alarm hour (0 - 23): "))
-                alarm_minute = int(input("Choose the alarm minute (0 - 59): "))
-                alarm_second = int(input("Choose the alarm second (0 - 59): "))
+                current_time = input("Enter the current Time in HH:MM:SS format: ")
+                hours, minutes, seconds = map(int, current_time.split(':'))
+
 
                 if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
                     raise ValueError("Time values out of range")
@@ -118,13 +118,21 @@ try:
                 formatted_time = format_time()
                 print(f"The current time is: {formatted_time}", end="\r")
 
+                # Make sound in windows
                 if alarm_setting():
                     print(f"\nIt's {formatted_time}. It's wake-up time!")
                     for _ in range(3):
                         sound_file = 'C:\\chemin\\vers\\votre\\son.wav'
                         winsound.PlaySound(sound_file, winsound.SND_FILENAME)
                         time.sleep(0.2)
-                        
+                
+                # Make sound in macos
+                # if alarm_setting():
+                #     print("\n⏰ It's wake-up time!")
+                #     # Produire un bip sonore
+                #     for _ in range(3):  # Répéter 3 fois le bip
+                #         os.system('afplay /System/Library/Sounds/Glass.aiff')  # Chemin par défaut des sons sur macOS
+                #         time.sleep(0.2)  # Petite pause entre les bips       
     
             time.sleep(1)
             up_date_time()
