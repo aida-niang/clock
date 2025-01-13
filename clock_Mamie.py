@@ -1,8 +1,8 @@
 # Step 1 : Import the necessary libraries
 import time
 import keyboard
-import winsound
-import os
+import winsound #sound in windows
+#import os #sound in macos
 
 ##################################################################################
 # Step 2 : Initialization of the variables
