@@ -1,6 +1,7 @@
 # Step 1 : Import the necessary libraries
 import time
 import keyboard
+import winsound
 
 ##################################################################################
 # Initialization of the variables
@@ -12,6 +13,7 @@ alarm_hour = 0
 alarm_minute = 0
 alarm_second = 0
 format_choice = ''  
+
 
 ###################################################################################
 # Step 2 : Define the functions 
@@ -119,7 +121,12 @@ try:
 
                 if alarm_setting():
                     print(f"\nIt's {formatted_time}. It's wake-up time!")
-            
+                    for _ in range(3):
+                        sound_file = 'C:\\chemin\\vers\\votre\\son.wav'
+                        winsound.PlaySound(sound_file, winsound.SND_FILENAME)
+                        time.sleep(0.2)
+                        
+    
             time.sleep(1)
             up_date_time()
 
