@@ -29,6 +29,7 @@ def up_date_time(): #up date the time
 
 def format_time(): #choose the format 
     global hours, minutes, seconds, format_choice, local_time
+    global alarm_hour, alarm_minute, alarm_second
     local_time = time.localtime()
     set_time = time.struct_time((2025, 1, 6, hours, minutes, seconds, 0, 0, -1))
     if format_choice == '12h':
@@ -83,10 +84,10 @@ except ValueError as e:
 
 ########################################################################################################################
 #Step 5 : Set the alarm
-alarm_ = input("\nDo you want to set the alarm ? ((Yes/No))").strip().lower()
+alarm_ = input("\nDo you want to set the alarm ? ((Yes/No))").strip().lower().upper()
 
 try :
-    if alarm_ == 'Yes' :
+    if alarm_ == 'yes' :
         print (f"Please, set the alarm")
 
         alarm_hour = int(input("Choose the alarm hour (0 - 23) : "))
@@ -111,7 +112,8 @@ try:
         print(f"The current time is: {formatted_time}", end="\r")
 
         if alarm_setting():
-            print("\nIt's wake-up time!")
+            ALARM = format_time()
+            print(f"\nIt's : {ALARM}. It's wake-up time!")
         
         if not paused :
             time.sleep(1) # This function introduces a 1 second delay (in this case) between each update.
