@@ -1,5 +1,7 @@
 # Step 1 : Import the necessary libraries
 import time
+import os
+
 
 # Initialization of the variables
 hours = 0
@@ -88,8 +90,12 @@ try:
 
         if alarm_setting():
             print("\n⏰ It's wake-up time!")
+             # Produire un bip sonore
+            for _ in range(5):  # Répéter 5 fois le bip
+                os.system('afplay /System/Library/Sounds/Glass.aiff')  # Chemin par défaut des sons sur macOS
+                time.sleep(0.5)  # Petite pause entre les bips
             break
-
+ 
         time.sleep(1)  # This function introduces a 1-second delay between updates.
         up_date_time()
 
