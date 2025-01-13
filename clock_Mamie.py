@@ -12,9 +12,7 @@ seconds = 0
 alarm_hour = 0
 alarm_minute = 0
 alarm_second = 0
-format_choice = ''  
-
-
+format_choice = ''
 ###################################################################################
 # Step 3 : Define the functions 
 def up_date_time():  # Update the time
