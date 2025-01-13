@@ -89,10 +89,17 @@ except ValueError:
 # Step 6 : Call the different functions (the main loop)
 print("To exit, press Ctrl + C")
 
+<<<<<<< HEAD
 try:
     while True:
         formatted_time = format_time()
         print(f"The current time is: {formatted_time}", end="\r")
+=======
+        if not pause:
+            if format_choice != '':
+                formatted_time = format_time()
+                print(f"The current time is: {formatted_time}", end="\r")
+>>>>>>> f067e49adbaad7a5bba414dd746c94e81d304492
 
         if alarm_setting():
             print("\n⏰ It's wake-up time!")
