@@ -102,5 +102,5 @@ except ValueError:
 # Create the animation for the clock in the figure
 animate = FuncAnimation(fig, update_text_clock, frames=np.arange(0, 100), init_func=init, interval=1000, blit=True)
 
-# Show my clock
+# Show my clock in the figure
 plt.show()
