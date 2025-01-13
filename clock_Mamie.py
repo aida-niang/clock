@@ -64,8 +64,8 @@ try:
     while True:
         if keyboard.is_pressed('c'):
             try:   
-                alarm_time = input("Choose the alarm time in HH:MM:SS format: ")
-                alarm_hour, alarm_minute, alarm_second = map(int, alarm_time.split(':'))
+                current_time = input("Enter the current Time in HH:MM:SS format: ")
+                hours, minutes, seconds = map(int, current_time.split(':'))
                 
                 if not (0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60):
                     raise ValueError("Time values out of range")
@@ -86,10 +86,8 @@ try:
         elif keyboard.is_pressed('a'):
             try:
                 print(f"Please, set the alarm")
-
-                current_time = input("Enter the current Time in HH:MM:SS format: ")
-                hours, minutes, seconds = map(int, current_time.split(':'))
-
+                alarm_time = input("Choose the alarm time in HH:MM:SS format: ")
+                alarm_hour, alarm_minute, alarm_second = map(int, alarm_time.split(':'))
 
                 if not (0 <= alarm_hour < 24 and 0 <= alarm_minute < 60 and 0 <= alarm_second < 60):
                     raise ValueError("Time values out of range")
